@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiashang.xyz/"/>
-  <updated>2020-04-05T08:17:55.834Z</updated>
+  <updated>2020-04-06T08:40:12.031Z</updated>
   <id>http://xiashang.xyz/</id>
   
   <author>
@@ -17,26 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>My New Post</title>
-    <link href="http://xiashang.xyz/2020/04/06/My-New-Post/"/>
-    <id>http://xiashang.xyz/2020/04/06/My-New-Post/</id>
-    <published>2020-04-05T16:17:55.000Z</published>
-    <updated>2020-04-05T08:17:55.834Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-    
-  </entry>
-  
-  <entry>
     <title>Hello World</title>
-    <link href="http://xiashang.xyz/2020/04/05/hello-world/"/>
-    <id>http://xiashang.xyz/2020/04/05/hello-world/</id>
-    <published>2020-04-05T07:36:05.102Z</published>
-    <updated>2020-04-05T07:36:05.102Z</updated>
+    <link href="http://xiashang.xyz/2020/04/06/hello-world/"/>
+    <id>http://xiashang.xyz/2020/04/06/hello-world/</id>
+    <published>2020-04-05T16:17:55.000Z</published>
+    <updated>2020-04-06T08:40:12.031Z</updated>
     
     <summary type="html">
     
@@ -51,6 +36,8 @@
     </summary>
     
     
+    
+      <category term="技术" scheme="http://xiashang.xyz/tags/%E6%8A%80%E6%9C%AF/"/>
     
   </entry>
   
