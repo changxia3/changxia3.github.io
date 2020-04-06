@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>夏殇</title>
+  <icon>http://www.xiashang.xyz/icon.png</icon>
   
-  <subtitle>111111</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.xiashang.xyz/"/>
