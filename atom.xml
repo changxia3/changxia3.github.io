@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiashang.xyz/"/>
-  <updated>2020-05-04T08:17:23.728Z</updated>
+  <updated>2020-05-04T12:16:54.542Z</updated>
   <id>http://xiashang.xyz/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>博客搬迁</title>
+    <link href="http://xiashang.xyz/2020/05/05/%E5%8D%9A%E5%AE%A2%E6%90%AC%E8%BF%81/"/>
+    <id>http://xiashang.xyz/2020/05/05/%E5%8D%9A%E5%AE%A2%E6%90%AC%E8%BF%81/</id>
+    <published>2020-05-04T18:49:12.000Z</published>
+    <updated>2020-05-04T12:16:54.542Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;从念高中时起就有写文字的冲动，当时大多时候就在QQ空间写些无关痛痒的东西。到大学时期，2014年开始搭建自己的个人博客，用的是新浪云SAE，那会SAE给个人提供免费试用，后面开始收费就放弃SAE了。&lt;/p&gt;
+
+        
+      
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="http://xiashang.xyz/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+      <category term="随笔" scheme="http://xiashang.xyz/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hello World</title>
     <link href="http://xiashang.xyz/2020/04/06/hello-world/"/>
     <id>http://xiashang.xyz/2020/04/06/hello-world/</id>
     <published>2020-04-05T16:17:55.000Z</published>
-    <updated>2020-05-04T08:17:23.728Z</updated>
+    <updated>2020-05-04T10:50:25.143Z</updated>
     
     <summary type="html">
     
