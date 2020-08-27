@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiashang.xyz/"/>
-  <updated>2020-07-17T11:38:35.444Z</updated>
+  <updated>2020-08-27T08:28:01.088Z</updated>
   <id>http://xiashang.xyz/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>针对哥斯拉的一些检测思路</title>
+    <link href="http://xiashang.xyz/2020/08/27/%E9%92%88%E5%AF%B9%E5%93%A5%E6%96%AF%E6%8B%89%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A3%80%E6%B5%8B%E6%80%9D%E8%B7%AF/"/>
+    <id>http://xiashang.xyz/2020/08/27/%E9%92%88%E5%AF%B9%E5%93%A5%E6%96%AF%E6%8B%89%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A3%80%E6%B5%8B%E6%80%9D%E8%B7%AF/</id>
+    <published>2020-08-27T15:55:46.000Z</published>
+    <updated>2020-08-27T08:28:01.088Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;近日，网上发布了一款名为“哥斯拉”的webshell管理工具。与冰蝎类似，哥斯拉也采用了加密流量通信来躲避WAF等安全设备的检测，另外该工具自带了一些插件模块，实现了写内存webshell、与Meterpreter联动、bypass
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://xiashang.xyz/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="webshell检测" scheme="http://xiashang.xyz/tags/webshell%E6%A3%80%E6%B5%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>F5 hsqldb漏洞踩坑笔记</title>
