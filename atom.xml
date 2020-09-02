@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://xiashang.xyz/"/>
-  <updated>2020-08-27T08:34:31.037Z</updated>
+  <updated>2020-09-02T11:25:58.924Z</updated>
   <id>http://xiashang.xyz/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记一（原理篇）</title>
+    <link href="http://xiashang.xyz/2020/09/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%88%E5%8E%9F%E7%90%86%E7%AF%87%EF%BC%89/"/>
+    <id>http://xiashang.xyz/2020/09/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%88%E5%8E%9F%E7%90%86%E7%AF%87%EF%BC%89/</id>
+    <published>2020-09-02T19:24:38.000Z</published>
+    <updated>2020-09-02T11:25:58.924Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://xiashang.xyz/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://xiashang.xyz/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
   
   <entry>
     <title>针对哥斯拉的一些检测思路</title>
