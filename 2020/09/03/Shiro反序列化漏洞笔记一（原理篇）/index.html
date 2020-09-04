@@ -13,28 +13,28 @@
 <meta property="og:site_name" content="夏殇">
 <meta property="og:description" content="0x1 前言Shiro-550反序列化漏洞大约在2016年就被披露了，但感觉直到近一两年，在各种攻防演练中这个漏洞才真正走进了大家的视野，Shiro-550反序列化应该可以算是这一两年最好用的RCE漏洞之一，原因有很多：Shiro框架使用广泛，漏洞影响范围广；攻击payload经过AES加密，很多安全防护设备无法识别&#x2F;拦截攻击……最初碰到Shiro反序列化漏洞应该是在2017或者2018年的一个C">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/1.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/1.png">
 <meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/2.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/3.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/4.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/5.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/6.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/7.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/8.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/9.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/10.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/11.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/12.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/13.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/14.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/15.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/16.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/3.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/4.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/5.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/6.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/7.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/8.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/9.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/10.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/11.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/12.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/13.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/14.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/15.png">
+<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/16.png">
 <meta property="article:published_time" content="2020-09-02T19:24:38.000Z">
-<meta property="article:modified_time" content="2020-09-02T11:31:43.881Z">
+<meta property="article:modified_time" content="2020-09-04T12:26:56.338Z">
 <meta property="article:author" content="夏殇">
 <meta property="article:tag" content="JAVA反序列化漏洞">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/1.png">
+<meta name="twitter:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/1.png">
     
     
         
@@ -96,6 +96,8 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" href="/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" href="/2020/08/27/%E9%92%88%E5%AF%B9%E5%93%A5%E6%96%AF%E6%8B%89%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A3%80%E6%B5%8B%E6%80%9D%E8%B7%AF/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
@@ -125,7 +127,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-环境搭建"><span class="toc-number">2.</span> <span class="toc-text">0x2 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-加密过程"><span class="toc-number">3.1.</span> <span class="toc-text">1.加密过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-解密过程"><span class="toc-number">3.2.</span> <span class="toc-text">2.解密过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-总结"><span class="toc-number">4.</span> <span class="toc-text">0x4 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-环境搭建"><span class="toc-number">2.</span> <span class="toc-text">0x2 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加密过程"><span class="toc-number">3.1.</span> <span class="toc-text">加密过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解密过程"><span class="toc-number">3.2.</span> <span class="toc-text">解密过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-总结"><span class="toc-number">4.</span> <span class="toc-text">0x4 总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -179,31 +181,31 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;apache&#x2F;shiro.git</span><br><span class="line">cd shiro</span><br><span class="line">git checkout shiro-root-1.2.4</span><br></pre></td></tr></table></figure>
 <p>编辑shiro/samples/web目录下的pom.xml,将jstl的版本修改为1.2。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;javax.servlet&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jstl&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;scope&gt;runtime&lt;&#x2F;scope&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-<p>在IDEA中导入mvn项目,并配置tomcat环境。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/1.png" alt=""></p>
+<p>在IDEA中导入mvn项目,并配置tomcat环境。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/1.png" alt=""></p>
 <h2 id="0x3-漏洞分析"><a href="#0x3-漏洞分析" class="headerlink" title="0x3 漏洞分析"></a>0x3 漏洞分析</h2><p>根据漏洞描述，Shiro≤1.2.4版本默认使用CookieRememberMeManager，当获取用户请求时，大致的关键处理过程如下：<br><strong>·</strong> 获取Cookie中rememberMe的值<br><strong>·</strong> 对rememberMe进行Base64解码<br><strong>·</strong> 使用AES进行解密<br><strong>·</strong> 对解密的值进行反序列化</p>
 <p>由于AES加密的Key是硬编码的默认Key，因此攻击者可通过使用默认的Key对恶意构造的序列化数据进行加密，当CookieRememberMeManager对恶意的rememberMe进行以上过程处理时，最终会对恶意数据进行反序列化，从而导致反序列化漏洞。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/2.png" alt=""></p>
-<h3 id="1-加密过程"><a href="#1-加密过程" class="headerlink" title="1.加密过程"></a>1.加密过程</h3><p>先分析一下加密的过程。<br>在org/apache/shiro/mgt/DefaultSecurityManager.java代码的rememberMeSuccessfulLogin方法下断点。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/3.png" alt=""></p>
+<h3 id="加密过程"><a href="#加密过程" class="headerlink" title="加密过程"></a>加密过程</h3><p>先分析一下加密的过程。<br>在org/apache/shiro/mgt/DefaultSecurityManager.java代码的rememberMeSuccessfulLogin方法下断点。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/3.png" alt=""></p>
 <p>跟进onSuccessfulLogin方法，具体实现代码在AbstractRememberMeManager.java。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public void onSuccessfulLogin(Subject subject, AuthenticationToken token, AuthenticationInfo info) &#123;</span><br><span class="line">        &#x2F;&#x2F;always clear any previous identity:</span><br><span class="line">        forgetIdentity(subject);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;now save the new identity:</span><br><span class="line">        if (isRememberMe(token)) &#123;</span><br><span class="line">            rememberIdentity(subject, token, info);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            if (log.isDebugEnabled()) &#123;</span><br><span class="line">                log.debug(&quot;AuthenticationToken did not indicate RememberMe is requested.  &quot; +</span><br><span class="line">                        &quot;RememberMe functionality will not be executed for corresponding account.&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>调用forgetIdentity方法对subject进行处理，subject对象表示单个用户的状态和安全操作，包含认证、授权等（ <code>http://shiro.apache.org/static/1.6.0/apidocs/org/apache/shiro/subject/Subject.html</code>）。继续跟进forgetIdentity方法，getCookie方法获取请求的cookie，接着会进入到removeFrom方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/4.png" alt=""></p>
-<p>removeForm主要在response头部添加Set-Cookie: rememberMe=deleteMe<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/5.png" alt=""></p>
-<p>然后再回到onSuccessfulLogin方法中，如果设置rememberMe则进入rememberIdentity。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/6.png" alt=""></p>
+<p>调用forgetIdentity方法对subject进行处理，subject对象表示单个用户的状态和安全操作，包含认证、授权等（ <code>http://shiro.apache.org/static/1.6.0/apidocs/org/apache/shiro/subject/Subject.html</code>）。继续跟进forgetIdentity方法，getCookie方法获取请求的cookie，接着会进入到removeFrom方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/4.png" alt=""></p>
+<p>removeForm主要在response头部添加Set-Cookie: rememberMe=deleteMe<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/5.png" alt=""></p>
+<p>然后再回到onSuccessfulLogin方法中，如果设置rememberMe则进入rememberIdentity。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/6.png" alt=""></p>
 <p>rememberIdentity方法代码中，调用convertPrincipalsToBytes对用户名进行处理。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protected void rememberIdentity(Subject subject, PrincipalCollection accountPrincipals) &#123;</span><br><span class="line">        byte[] bytes &#x3D; convertPrincipalsToBytes(accountPrincipals);</span><br><span class="line">        rememberSerializedIdentity(subject, bytes);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>进入convertPrincipalsToBytes，调用serialize对用户名进行处理。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">protected byte[] convertPrincipalsToBytes(PrincipalCollection principals) &#123;</span><br><span class="line">        byte[] bytes &#x3D; serialize(principals);</span><br><span class="line">        if (getCipherService() !&#x3D; null) &#123;</span><br><span class="line">            bytes &#x3D; encrypt(bytes);</span><br><span class="line">        &#125;</span><br><span class="line">        return bytes;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>跟进serialize方法来到org/apache/shiro/io/DefaultSerializer.java，很明显这里对用户名进行了序列化。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/7.png" alt=""></p>
-<p>再回到convertPrincipalsToBytes，接着对序列化的数据进行加密，跟进encrypt方法。加密算法为AES，模式为CBC，填充算法为PKCS5Padding。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/8.png" alt=""></p>
-<p>getEncryptionCipherKey获取加密的密钥，在AbstractRememberMeManager.java定义了默认的加密密钥为kPH+bIxk5D2deZiIxcaaaA==。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/9.png" alt=""></p>
-<p>加密完成后，继续回到rememberIdentity，跟进rememberSerializedIdentity方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/10.png" alt=""></p>
-<p>对加密的bytes进行base64编码，保存在cookie中。至此，加密的流程基本就分析完了。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/11.png" alt=""></p>
-<h3 id="2-解密过程"><a href="#2-解密过程" class="headerlink" title="2.解密过程"></a>2.解密过程</h3><p>对cookie中rememberMe的解密代码也是在AbstractRememberMeManager.java中实现。直接在getRememberedPrincipals下断点。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/12.png" alt=""></p>
-<p>getRememberedSerializedIdentity返回cookie中rememberMe的base64解码后的bytes。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/13.png" alt=""></p>
+<p>跟进serialize方法来到org/apache/shiro/io/DefaultSerializer.java，很明显这里对用户名进行了序列化。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/7.png" alt=""></p>
+<p>再回到convertPrincipalsToBytes，接着对序列化的数据进行加密，跟进encrypt方法。加密算法为AES，模式为CBC，填充算法为PKCS5Padding。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/8.png" alt=""></p>
+<p>getEncryptionCipherKey获取加密的密钥，在AbstractRememberMeManager.java定义了默认的加密密钥为kPH+bIxk5D2deZiIxcaaaA==。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/9.png" alt=""></p>
+<p>加密完成后，继续回到rememberIdentity，跟进rememberSerializedIdentity方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/10.png" alt=""></p>
+<p>对加密的bytes进行base64编码，保存在cookie中。至此，加密的流程基本就分析完了。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/11.png" alt=""></p>
+<h3 id="解密过程"><a href="#解密过程" class="headerlink" title="解密过程"></a>解密过程</h3><p>对cookie中rememberMe的解密代码也是在AbstractRememberMeManager.java中实现。直接在getRememberedPrincipals下断点。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/12.png" alt=""></p>
+<p>getRememberedSerializedIdentity返回cookie中rememberMe的base64解码后的bytes。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/13.png" alt=""></p>
 <p>继续调用convertBytesToPrincipals方法对解码后的bytes处理，跟进convertBytesToPrincipals方法，调用decrypt方法对bytes进行解密。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">protected PrincipalCollection convertBytesToPrincipals(byte[] bytes, SubjectContext subjectContext) &#123;</span><br><span class="line">        if (getCipherService() !&#x3D; null) &#123;</span><br><span class="line">            bytes &#x3D; decrypt(bytes);</span><br><span class="line">        &#125;</span><br><span class="line">        return deserialize(bytes);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>解密后得到的结果为序列化字符串的bytes。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/14.png" alt=""></p>
-<p>然后进入到deserialize方法进行反序列化，即用户可控的rememberMe值经过解密后进行反序列化从而引发反序列化漏洞。这里需要注意的是shiro并不是使用原生的反序列化，而是重写了ObjectInputStream，这个重写也带来了反序列化漏洞利用过程中的一些坑，这个问题在这里先不深究，在后面的笔记再详细分析。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/15.png" alt=""></p>
-<h2 id="0x4-总结"><a href="#0x4-总结" class="headerlink" title="0x4 总结"></a>0x4 总结</h2><p>从上面的分析可以知道，大体的漏洞触发流程为：构造恶意的序列化Cookie rememberMe的值——解密——反序列化。所以Shiro反序列化漏洞一个很关键的点就在于AES解密的密钥，攻击者需要知道密钥才能构造恶意的序列化数据。在Shiro≤1.2.4中默认密钥为kPH+bIxk5D2deZiIxcaaaA==。官方针对这个漏洞的修复方式是去掉了默认的Key，生成随机的Key。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-551-1/16.png" alt=""></p>
+<p>解密后得到的结果为序列化字符串的bytes。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/14.png" alt=""></p>
+<p>然后进入到deserialize方法进行反序列化，即用户可控的rememberMe值经过解密后进行反序列化从而引发反序列化漏洞。这里需要注意的是Shiro并不是使用原生的反序列化，而是重写了ObjectInputStream，这个重写也带来了反序列化漏洞利用过程中的一些坑，这个问题在这里先不深究，在后面的笔记再详细分析。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/15.png" alt=""></p>
+<h2 id="0x4-总结"><a href="#0x4-总结" class="headerlink" title="0x4 总结"></a>0x4 总结</h2><p>从上面的分析可以知道，大体的漏洞触发流程为：构造恶意的序列化Cookie rememberMe的值——解密——反序列化。所以Shiro反序列化漏洞一个很关键的点就在于AES解密的密钥，攻击者需要知道密钥才能构造恶意的序列化数据。在Shiro≤1.2.4中默认密钥为kPH+bIxk5D2deZiIxcaaaA==。官方针对这个漏洞的修复方式是去掉了默认的Key，生成随机的Key。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-1/16.png" alt=""></p>
 <p>但是并不是说Shiro&gt;1.2.4版本就一定不存在反序列化漏洞，在平常的安全测试中发现一些应用即使使用高版本的Shiro也会存在问题，因为开发者通过自定义Key的方法又把默认的Key写回去了，或者一些开发者在写代码的时候习惯拷贝网上的一些代码，同时也拷贝了其他人自定义的Key，在进行漏洞测试时可以通过搜索网上常见的自定义的Shiro解密的Key进行测试，成功的概率还是蛮高的。</p>
 
   </div>
@@ -230,7 +232,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-环境搭建"><span class="toc-number">2.</span> <span class="toc-text">0x2 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-加密过程"><span class="toc-number">3.1.</span> <span class="toc-text">1.加密过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-解密过程"><span class="toc-number">3.2.</span> <span class="toc-text">2.解密过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-总结"><span class="toc-number">4.</span> <span class="toc-text">0x4 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-环境搭建"><span class="toc-number">2.</span> <span class="toc-text">0x2 环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加密过程"><span class="toc-number">3.1.</span> <span class="toc-text">加密过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解密过程"><span class="toc-number">3.2.</span> <span class="toc-text">解密过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-总结"><span class="toc-number">4.</span> <span class="toc-text">0x4 总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
