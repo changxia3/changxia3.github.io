@@ -9,29 +9,29 @@
     <meta name="description" content="0x1 前言在前面原理篇最后提到过Shiro-550反序列化漏洞的一个关键点在于AES加密的密钥。除了密钥之外，Shiro反序列化漏洞的检测还有很多需要关注的点，这篇笔记就Shiro反序列化漏洞的检测展开记录。整体的检测流程如下： 0x2 Shiro的识别检测应用是否存在Shiro反序列化漏洞的第一步就是先检测是否应用是否试用了Shiro。首先最直观的可以先看登录页面是否存在记住我功能，其次可以抓">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Shiro反序列化漏洞笔记二（检测篇）">
-<meta property="og:url" content="http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/index.html">
-<meta property="og:site_name" content="夏殇">
+<meta property="og:url" content="http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/index.html">
+<meta property="og:site_name" content="长夏">
 <meta property="og:description" content="0x1 前言在前面原理篇最后提到过Shiro-550反序列化漏洞的一个关键点在于AES加密的密钥。除了密钥之外，Shiro反序列化漏洞的检测还有很多需要关注的点，这篇笔记就Shiro反序列化漏洞的检测展开记录。整体的检测流程如下： 0x2 Shiro的识别检测应用是否存在Shiro反序列化漏洞的第一步就是先检测是否应用是否试用了Shiro。首先最直观的可以先看登录页面是否存在记住我功能，其次可以抓">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/2.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/3.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/4.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/5.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/6.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/7.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/8.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/9.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/10.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/11.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/12.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/13.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/2.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/3.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/4.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/5.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/6.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/7.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/8.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/9.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/10.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/11.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/12.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/13.png">
 <meta property="article:published_time" content="2020-09-04T20:27:19.000Z">
-<meta property="article:modified_time" content="2021-01-09T08:36:30.995Z">
-<meta property="article:author" content="夏殇">
+<meta property="article:modified_time" content="2022-04-17T14:47:07.411Z">
+<meta property="article:author" content="长夏">
 <meta property="article:tag" content="JAVA反序列化漏洞">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png">
+<meta name="twitter:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png">
     
     
         
@@ -65,7 +65,7 @@
     <!-- rss -->
     
     
-      <link rel="alternate" href="/true" title="夏殇" type="application/atom+xml" />
+      <link rel="alternate" href="/true" title="长夏" type="application/atom+xml" />
     
 <meta name="generator" content="Hexo 4.2.0"></head>
 
@@ -81,11 +81,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </span>
@@ -109,17 +109,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&text=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&is_video=false&description=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Shiro反序列化漏洞笔记二（检测篇）&body=Check out this article: http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&name=Shiro反序列化漏洞笔记二（检测篇）&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&t=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&text=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&is_video=false&description=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Shiro反序列化漏洞笔记二（检测篇）&body=Check out this article: http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&name=Shiro反序列化漏洞笔记二（检测篇）&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&t=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -143,7 +143,7 @@
 
     <div class="meta">
       <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">夏殇</span>
+        <span itemprop="name">长夏</span>
       </span>
       
     <div class="postdate">
@@ -173,10 +173,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h2 id="0x1-前言"><a href="#0x1-前言" class="headerlink" title="0x1 前言"></a>0x1 前言</h2><p>在前面原理篇最后提到过Shiro-550反序列化漏洞的一个关键点在于AES加密的密钥。除了密钥之外，Shiro反序列化漏洞的检测还有很多需要关注的点，这篇笔记就Shiro反序列化漏洞的检测展开记录。整体的检测流程如下：<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png" alt=""></p>
-<h2 id="0x2-Shiro的识别"><a href="#0x2-Shiro的识别" class="headerlink" title="0x2 Shiro的识别"></a>0x2 Shiro的识别</h2><p>检测应用是否存在Shiro反序列化漏洞的第一步就是先检测是否应用是否试用了Shiro。首先最直观的可以先看登录页面是否存在记住我功能，其次可以抓取数据包看响应包的头部是否存在Set-Cookie: rememberMe=deleteMe。但是这样子很容易遗漏，最稳妥的方法应该是先在请求的Cookie添加rememberMe=xxx，然后看响应是否返回Set-Cookie: rememberMe=deleteMe。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/2.png" alt=""></p>
-<p>如果是平常安全测试的话可以在Burp Suite实现经过代理的每个数据包中自动添加测试Cookie，再观察返回包信息判断是否使用了Shiro框架。也可以通过写Burp Suite插件的方式实现更方便的检测。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/3.png" alt=""></p>
-<p>前段时间造轮子写了一个简单的漏洞扫描平台，后来不忍直视基本就弃坑了。就借这个平台重新写一下Shiro反序列化漏洞检测的插件吧。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/4.png" alt=""></p>
+    <h2 id="0x1-前言"><a href="#0x1-前言" class="headerlink" title="0x1 前言"></a>0x1 前言</h2><p>在前面原理篇最后提到过Shiro-550反序列化漏洞的一个关键点在于AES加密的密钥。除了密钥之外，Shiro反序列化漏洞的检测还有很多需要关注的点，这篇笔记就Shiro反序列化漏洞的检测展开记录。整体的检测流程如下：<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/1.png" alt=""></p>
+<h2 id="0x2-Shiro的识别"><a href="#0x2-Shiro的识别" class="headerlink" title="0x2 Shiro的识别"></a>0x2 Shiro的识别</h2><p>检测应用是否存在Shiro反序列化漏洞的第一步就是先检测是否应用是否试用了Shiro。首先最直观的可以先看登录页面是否存在记住我功能，其次可以抓取数据包看响应包的头部是否存在Set-Cookie: rememberMe=deleteMe。但是这样子很容易遗漏，最稳妥的方法应该是先在请求的Cookie添加rememberMe=xxx，然后看响应是否返回Set-Cookie: rememberMe=deleteMe。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/2.png" alt=""></p>
+<p>如果是平常安全测试的话可以在Burp Suite实现经过代理的每个数据包中自动添加测试Cookie，再观察返回包信息判断是否使用了Shiro框架。也可以通过写Burp Suite插件的方式实现更方便的检测。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/3.png" alt=""></p>
+<p>前段时间造轮子写了一个简单的漏洞扫描平台，后来不忍直视基本就弃坑了。就借这个平台重新写一下Shiro反序列化漏洞检测的插件吧。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/4.png" alt=""></p>
 <p>按照检测思路，先判断是否试用Shiro，是的话进入检测代码，不是的话直接退出检测。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">response &#x3D; requests.get(target, cookies&#x3D;&#123;&#39;rememberMe&#39;: &#39;check&#39;&#125;)</span><br><span class="line">if &#39;Set-Cookie&#39; in response.headers.keys() and &#39;rememberMe&#x3D;deleteMe&#39; in response.headers[&#39;Set-Cookie&#39;]: #检测是否使用Shiro</span><br><span class="line">	&#x2F;*Shiro反序列化漏洞检测*&#x2F;</span><br><span class="line">else:</span><br><span class="line">	&#x2F;*不存在Shiro反序列化漏洞，退出*&#x2F;</span><br></pre></td></tr></table></figure>
 
@@ -193,18 +193,18 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">for shiro_key in shiro_keys:</span><br><span class="line">    rememberMe_value &#x3D; shiro_aes(get_key_b64, shiro_key) #检测Shiro AES加密的key</span><br><span class="line">    try:</span><br><span class="line">        response &#x3D; requests.get(target, cookies&#x3D;&#123;&#39;rememberMe&#39;: rememberMe_value&#125;)</span><br><span class="line">        if &#39;Set-Cookie&#39; in response.headers.keys() and &#39;rememberMe&#39; not in response.headers[&#39;Set-Cookie&#39;]:</span><br><span class="line">            shiro_key_right &#x3D; shiro_key</span><br><span class="line">            print &quot;存在Shiro反序列化漏洞&quot;</span><br><span class="line">            print &quot;key found: &quot; + shiro_key</span><br><span class="line">            break</span><br><span class="line">        elif &#39;Set-Cookie&#39; not in response.headers.keys():</span><br><span class="line">            shiro_key_right &#x3D; shiro_key</span><br><span class="line">            print &quot;存在Shiro反序列化漏洞&quot;</span><br><span class="line">            print &quot;key found: &quot; + shiro_key</span><br><span class="line">            break</span><br><span class="line">    except:</span><br><span class="line">        pass</span><br></pre></td></tr></table></figure>
 
 <h3 id="可用的gadget"><a href="#可用的gadget" class="headerlink" title="可用的gadget"></a>可用的gadget</h3><p>确定AES加密的密钥后，后面就是进一步确定可用的gadget。对于gadget的检测，我们需要把目标环境是否可以出外网纳入需要考虑的因素。对应的可以把 ysoserial 中的gadget分为两类：需要出外网的和不需要出外网的。通常情况下需要出外网的如：URLDNS、JRMPClient、C3P0等，不需要出外网可直接执行命令的如CommonBeanutils1、CommonsCollections1-7、Jdk7u21等（当然这些也可以通过执行ping、wget等命令发起网络请求）。</p>
-<p>对于可以出网的环境的检测是最简单的，所以在gadget检测时可以先尝试URLDNS判断目标环境是否可以出网，因为URLDNS不依赖于任何的第三方库，但是使用URLDNS检测后DNSLOG平台存在DNS记录并不完全等同于可以出外网，还有可能是目标只支持DNS解析，但是TCP协议等是不能出外网的。其次，可以通过CommonBeanutils1等其他gadget执行wget或者curl命令，这里需要考虑操作系统情况，Windows则是certutil等命令。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/5.png" alt=""></p>
+<p>对于可以出网的环境的检测是最简单的，所以在gadget检测时可以先尝试URLDNS判断目标环境是否可以出网，因为URLDNS不依赖于任何的第三方库，但是使用URLDNS检测后DNSLOG平台存在DNS记录并不完全等同于可以出外网，还有可能是目标只支持DNS解析，但是TCP协议等是不能出外网的。其次，可以通过CommonBeanutils1等其他gadget执行wget或者curl命令，这里需要考虑操作系统情况，Windows则是certutil等命令。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/5.png" alt=""></p>
 <p>也可以实现通过构造回显的方法进行漏洞检测，但是实现回显需要考虑不同中间件及版本等问题，还是不够通用，很容易造成漏报。那么有没有更通用的漏洞检测方法呢，答案肯定是有的。我们可以使用时间延迟的方法来判断哪个gadget可用。借用时间延迟检测我们不需要考虑目标是否可以出网，也不需要考虑操作系统等问题。</p>
-<p>如果需要实现时间延迟检测，需要先对ysoserial进行简单修改，加入时间延迟的payload。修改ysoserial里面的payload可以分为两种情况，一种是使用了createTemplatesImplTime链的，如CommonsBeanutils1，直接在Gadgets类中新增createTemplatesImplTime方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/6.png" alt=""><br>然后新建一个CommonsBeanutils1_Time类，将原来的CommonsBeanutils1代码中的createTemplatesTmpl修改为createTemplatesImplTime方法。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/7.png" alt=""></p>
-<p>对于不使用createTemplatesImplTime链的，则需要另外单独一个个修改了，如CommonsCollections1。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/8.png" alt=""></p>
-<p>请求延迟10秒测试：<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/9.png" alt=""></p>
-<p>为了降低网络不稳定带来的误报，在如何判断是否产生时间延迟上，我借鉴了sqlmap时间盲注的思路。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/10.png" alt=""></p>
+<p>如果需要实现时间延迟检测，需要先对ysoserial进行简单修改，加入时间延迟的payload。修改ysoserial里面的payload可以分为两种情况，一种是使用了createTemplatesImplTime链的，如CommonsBeanutils1，直接在Gadgets类中新增createTemplatesImplTime方法。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/6.png" alt=""><br>然后新建一个CommonsBeanutils1_Time类，将原来的CommonsBeanutils1代码中的createTemplatesTmpl修改为createTemplatesImplTime方法。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/7.png" alt=""></p>
+<p>对于不使用createTemplatesImplTime链的，则需要另外单独一个个修改了，如CommonsCollections1。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/8.png" alt=""></p>
+<p>请求延迟10秒测试：<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/9.png" alt=""></p>
+<p>为了降低网络不稳定带来的误报，在如何判断是否产生时间延迟上，我借鉴了sqlmap时间盲注的思路。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/10.png" alt=""></p>
 <p>大体检测流程如下：<br>• 执行30次原始请求，记录响应时间<br>• 计算30次请求响应时间的标准差及平均差<br>• 根据标准差和时间差计算最慢响应时间<br>• 如果响应时间比最难响应时间要大则可以判断为产生了时间延迟，否则没有产生时间延迟<br>• 执行三次请求减少误报，第一次请求提交为延迟5秒的payload，第二次请求为延迟0秒的payload，第三次请求为延迟5秒的payload</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">lowerStdLimit &#x3D; average(responseTimes) + 7 * stdev(responseTimes)</span><br><span class="line">MIN_VALID_DELAYED_RESPONSE &#x3D; 0.5</span><br><span class="line"></span><br><span class="line">for payload in payloads: #时间延迟检测，三次检测，减少误报</span><br><span class="line">    rememberMe_value1 &#x3D; time_sleep_poc(shiro_key, payload, 5000)</span><br><span class="line">    rememberMe_value2 &#x3D; time_sleep_poc(shiro_key, payload, 0)</span><br><span class="line">    try:</span><br><span class="line">        time1 &#x3D; resp_time(target, rememberMe_value1)</span><br><span class="line">        if time1 and time1 &gt;&#x3D; max(MIN_VALID_DELAYED_RESPONSE, lowerStdLimit):</span><br><span class="line">            time2 &#x3D; resp_time(target, rememberMe_value2)</span><br><span class="line">            if time2 and time2 &lt; max(MIN_VALID_DELAYED_RESPONSE, lowerStdLimit):</span><br><span class="line">                time3 &#x3D; resp_time(target, rememberMe_value1)</span><br><span class="line">                if time3 and time3 &gt;&#x3D; max(MIN_VALID_DELAYED_RESPONSE, lowerStdLimit):</span><br><span class="line">                    print &quot;payload found: &quot; + payload</span><br><span class="line">                    print &quot;Cookie: &quot; + &quot;rememberMe&#x3D;&quot; + rememberMe_value1</span><br><span class="line">                    print &quot;*&quot; * 100</span><br><span class="line"></span><br><span class="line">    except Exception as e:</span><br><span class="line">        print e</span><br></pre></td></tr></table></figure>
 
-<p>理论上，使用前面的检测方法应该能覆盖到大部分的场景了，但是其实还需要考虑一种情况。在Shiro反序列化漏洞中直接使用CommonCollections3、5、6、7链时会出现无法加载数组类问题，需要借助JRMPClient。同时在前面URLDNS的检测中也提到过检测目标环境是否通外网的问题，URLDNS只能证明支持DNS解析，在目标环境没有使用高版本JDK限制JNDI注入且可以出网的情况下，我们可以使用JRMPClient判断目标是否可以出外网，同时也可以解决CommonCollections链的坑。因此在检测中考虑也把JRMPClient加上。加入JRMPClient后在想怎样获取这个payload是否成功向VPS发起了连接。一开始想的是用java -jar ysoserial-0.0.6-SNAPSHOT-all.jar JRMPClient ‘xxx.dnslog.cn’这样子的方式去触发DNS查询，然后再去DNSLOG平台取结果，但是这种方式会遗漏目标不支持DNS解析，但是可以出外网的情况。后来想到了一种“投机取巧”的方法，可以直接修改ysoserial，使得JRMPClient向VPS的JRMPClient发起连接时，让VPS去向DNSLOG发起请求，然后再去DNSLOG平台取结果就可以了。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/11.png" alt=""></p>
-<p><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/12.png" alt=""></p>
-<p>至此，一个还算比较靠谱的Shiro反序列化漏洞检测脚本就完成了。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/13.png" alt=""></p>
+<p>理论上，使用前面的检测方法应该能覆盖到大部分的场景了，但是其实还需要考虑一种情况。在Shiro反序列化漏洞中直接使用CommonCollections3、5、6、7链时会出现无法加载数组类问题，需要借助JRMPClient。同时在前面URLDNS的检测中也提到过检测目标环境是否通外网的问题，URLDNS只能证明支持DNS解析，在目标环境没有使用高版本JDK限制JNDI注入且可以出网的情况下，我们可以使用JRMPClient判断目标是否可以出外网，同时也可以解决CommonCollections链的坑。因此在检测中考虑也把JRMPClient加上。加入JRMPClient后在想怎样获取这个payload是否成功向VPS发起了连接。一开始想的是用java -jar ysoserial-0.0.6-SNAPSHOT-all.jar JRMPClient ‘xxx.dnslog.cn’这样子的方式去触发DNS查询，然后再去DNSLOG平台取结果，但是这种方式会遗漏目标不支持DNS解析，但是可以出外网的情况。后来想到了一种“投机取巧”的方法，可以直接修改ysoserial，使得JRMPClient向VPS的JRMPClient发起连接时，让VPS去向DNSLOG发起请求，然后再去DNSLOG平台取结果就可以了。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/11.png" alt=""></p>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/12.png" alt=""></p>
+<p>至此，一个还算比较靠谱的Shiro反序列化漏洞检测脚本就完成了。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/Shiro-550-2/13.png" alt=""></p>
 <h2 id="0x4-总结"><a href="#0x4-总结" class="headerlink" title="0x4 总结"></a>0x4 总结</h2><p>简单总结一下，在漏洞检测中需要达成的重要目标无非就是较高的漏洞检出率和较低的误报率。而需要达成这两个目标的过程就要尽可能的想到各种可能的情况。要实现较高的漏洞检出率，在检测过程中我们需要确保检测的POC尽可能通用，如不受操作系统影响，不受目标是否可否可通外网影响等，另外通过先对Shiro AES加密的密钥先进行检测减少了很大的不确定性，极大的提高了漏洞检测的准确率。在误报率方面，比如在进行时间延迟检测时采用三次发包减少因网络延迟等原因造成的误报，以及在使用DNSLOG时可以引入随机或者重复率低的特定字符串来进行检测。</p>
 
   </div>
@@ -221,11 +221,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </div>
@@ -236,17 +236,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&text=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&is_video=false&description=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Shiro反序列化漏洞笔记二（检测篇）&body=Check out this article: http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&name=Shiro反序列化漏洞笔记二（检测篇）&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://xiashang.xyz/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&t=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&text=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&is_video=false&description=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Shiro反序列化漏洞笔记二（检测篇）&body=Check out this article: http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&title=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&name=Shiro反序列化漏洞笔记二（检测篇）&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia.com.cn/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/&t=Shiro反序列化漏洞笔记二（检测篇）" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -267,8 +267,8 @@
     Copyright &copy;
     
     
-    2020-2021
-    夏殇
+    2020-2022
+    长夏
   </div>
   <div class="footer-right">
     <nav>
@@ -276,11 +276,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </nav>

