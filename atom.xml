@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://changxia3.com/"/>
-  <updated>2022-05-08T09:39:43.818Z</updated>
+  <updated>2022-05-08T09:41:52.939Z</updated>
   <id>http://changxia3.com/</id>
   
   <author>
@@ -18,37 +18,10 @@
   
   <entry>
     <title>Shiro反序列化漏洞笔记五（对抗篇）</title>
-    <link href="http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89-1/"/>
-    <id>http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89-1/</id>
-    <published>2022-05-08T17:39:43.000Z</published>
-    <updated>2022-05-08T09:39:43.818Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
-        
-      
-    
-    </summary>
-    
-    
-      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-    
-      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Shiro反序列化漏洞笔记五（对抗篇）</title>
     <link href="http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89/"/>
     <id>http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89/</id>
     <published>2022-05-08T17:29:02.000Z</published>
-    <updated>2022-05-08T09:29:02.415Z</updated>
+    <updated>2022-05-08T09:41:52.939Z</updated>
     
     <summary type="html">
     
@@ -285,6 +258,33 @@
     
     
       <category term="webshell检测" scheme="http://changxia3.com/tags/webshell%E6%A3%80%E6%B5%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>F5 hsqldb漏洞踩坑笔记</title>
+    <link href="http://changxia3.com/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"/>
+    <id>http://changxia3.com/2020/07/17/F5-hsqldb%E6%BC%8F%E6%B4%9E%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/</id>
+    <published>2020-07-17T11:54:27.000Z</published>
+    <updated>2022-04-17T14:46:57.883Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;看了下F5 hsqldb漏洞，在Github上可以找到&lt;a href=&quot;https://github.com/Critical-Start/Team-Ares/tree/master/CVE-2020-5902&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="反序列漏洞" scheme="http://changxia3.com/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E6%BC%8F%E6%B4%9E/"/>
     
   </entry>
   
