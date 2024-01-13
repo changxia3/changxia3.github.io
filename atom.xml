@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>长夏</title>
+  <icon>http://changxia3.com/icon.png</icon>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://changxia3.com/"/>
+  <updated>2024-01-13T03:22:02.799Z</updated>
+  <id>http://changxia3.com/</id>
+  
+  <author>
+    <name>长夏</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>渗透回忆录｜Mybatis从SQL注入到OGNL表达式注入</title>
+    <link href="http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/"/>
+    <id>http://changxia3.com/2024/01/09/%E6%B8%97%E9%80%8F%E5%9B%9E%E5%BF%86%E5%BD%95%EF%BD%9CMybatis%E4%BB%8ESQL%E6%B3%A8%E5%85%A5%E5%88%B0OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/</id>
+    <published>2024-01-09T00:05:33.000Z</published>
+    <updated>2024-01-13T03:22:02.799Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="SQL注入" scheme="http://changxia3.com/tags/SQL%E6%B3%A8%E5%85%A5/"/>
+    
+      <category term="OGNL表达式注入" scheme="http://changxia3.com/tags/OGNL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B3%A8%E5%85%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记五（对抗篇）</title>
+    <link href="http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89/"/>
+    <id>http://changxia3.com/2022/05/09/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%94%EF%BC%88%E5%AF%B9%E6%8A%97%E7%AF%87%EF%BC%89/</id>
+    <published>2022-05-08T17:29:02.000Z</published>
+    <updated>2024-01-08T16:09:59.177Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>告别</title>
+    <link href="http://changxia3.com/2022/04/29/%E5%91%8A%E5%88%AB/"/>
+    <id>http://changxia3.com/2022/04/29/%E5%91%8A%E5%88%AB/</id>
+    <published>2022-04-29T10:30:06.000Z</published>
+    <updated>2022-05-08T08:24:55.584Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;仔细算了算，距离上一次更新博客已经将近10个月了，2021年也没有写总结，但这次长时间不更新并不是因为懒，抑或是无事可写。恰恰相反，正是因为这段时间亲身经历以及感受了一些事情，度过了目前为止人生中最为苦痛的一段时期，有些事情放心里不愿提及，有些事情不知道该如何说。&lt;/p&gt;
+
+        
+      
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="http://changxia3.com/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+      <category term="感悟" scheme="http://changxia3.com/tags/%E6%84%9F%E6%82%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>记一次无文件Webshell攻击分析</title>
+    <link href="http://changxia3.com/2021/07/13/%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%97%A0%E6%96%87%E4%BB%B6Webshell%E6%94%BB%E5%87%BB%E5%88%86%E6%9E%90/"/>
+    <id>http://changxia3.com/2021/07/13/%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%97%A0%E6%96%87%E4%BB%B6Webshell%E6%94%BB%E5%87%BB%E5%88%86%E6%9E%90/</id>
+    <published>2021-07-12T22:22:47.000Z</published>
+    <updated>2022-04-17T14:57:34.567Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1 前言&lt;/h2&gt;&lt;p&gt;前段时间看到宽字节安全公众号发的&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="无文件Webshell" scheme="http://changxia3.com/tags/%E6%97%A0%E6%96%87%E4%BB%B6Webshell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>再见，2020</title>
+    <link href="http://changxia3.com/2021/01/23/%E5%86%8D%E8%A7%81%EF%BC%8C2020/"/>
+    <id>http://changxia3.com/2021/01/23/%E5%86%8D%E8%A7%81%EF%BC%8C2020/</id>
+    <published>2021-01-23T11:38:03.000Z</published>
+    <updated>2022-04-17T14:47:13.795Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;2020年是不平凡的一年，一场突如其来的疫情打乱了世界原本的脚步。面对突如其来的变化，很多人开始关注当下，重新审视自己，重新审视生活。&lt;/p&gt;
+&lt;p&gt;2020年已经过去了23天了，但似乎是自己还没有做好准备迎接2021年，还是习惯性的将2020脱口而出为今年。已经很多年没有
+        
+      
+    
+    </summary>
+    
+    
+      <category term="生活" scheme="http://changxia3.com/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+      <category term="总结" scheme="http://changxia3.com/tags/%E6%80%BB%E7%BB%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记四（实战篇）</title>
+    <link href="http://changxia3.com/2020/12/27/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E5%9B%9B%EF%BC%88%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%89/"/>
+    <id>http://changxia3.com/2020/12/27/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E5%9B%9B%EF%BC%88%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%89/</id>
+    <published>2020-12-26T21:21:19.000Z</published>
+    <updated>2022-04-28T09:07:15.321Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记三（解疑篇）</title>
+    <link href="http://changxia3.com/2020/10/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%89%EF%BC%88%E8%A7%A3%E7%96%91%E7%AF%87%EF%BC%89/"/>
+    <id>http://changxia3.com/2020/10/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%89%EF%BC%88%E8%A7%A3%E7%96%91%E7%AF%87%EF%BC%89/</id>
+    <published>2020-10-03T09:57:01.000Z</published>
+    <updated>2022-04-17T14:47:04.086Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记二（检测篇）</title>
+    <link href="http://changxia3.com/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/"/>
+    <id>http://changxia3.com/2020/09/05/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%88%E6%A3%80%E6%B5%8B%E7%AF%87%EF%BC%89/</id>
+    <published>2020-09-04T20:27:19.000Z</published>
+    <updated>2022-04-17T14:47:07.411Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shiro反序列化漏洞笔记一（原理篇）</title>
+    <link href="http://changxia3.com/2020/09/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%88%E5%8E%9F%E7%90%86%E7%AF%87%EF%BC%89/"/>
+    <id>http://changxia3.com/2020/09/03/Shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%88%E5%8E%9F%E7%90%86%E7%AF%87%EF%BC%89/</id>
+    <published>2020-09-02T19:24:38.000Z</published>
+    <updated>2022-04-17T14:47:01.445Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;0x1-前言&quot;&gt;&lt;a href=&quot;#0x1-前言&quot; class=&quot;headerlink&quot; title=&quot;0x1 前言&quot;&gt;&lt;/a&gt;0x1
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="JAVA反序列化漏洞" scheme="http://changxia3.com/tags/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>针对哥斯拉的一些检测思路</title>
+    <link href="http://changxia3.com/2020/08/27/%E9%92%88%E5%AF%B9%E5%93%A5%E6%96%AF%E6%8B%89%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A3%80%E6%B5%8B%E6%80%9D%E8%B7%AF/"/>
+    <id>http://changxia3.com/2020/08/27/%E9%92%88%E5%AF%B9%E5%93%A5%E6%96%AF%E6%8B%89%E7%9A%84%E4%B8%80%E4%BA%9B%E6%A3%80%E6%B5%8B%E6%80%9D%E8%B7%AF/</id>
+    <published>2020-08-27T15:55:46.000Z</published>
+    <updated>2022-04-17T14:44:40.952Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;近日，网上发布了一款名为“哥斯拉”的webshell管理工具。与冰蝎类似，哥斯拉也采用了加密流量通信来躲避WAF等安全设备的检测，另外该工具自带了一些插件模块，实现了写内存webshell、与Meterpreter联动、bypass
+        
+      
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://changxia3.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="webshell检测" scheme="http://changxia3.com/tags/webshell%E6%A3%80%E6%B5%8B/"/>
+    
+  </entry>
+  
+</feed>
